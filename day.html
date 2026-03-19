@@ -1,0 +1,414 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day Data</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="day.css">
+</head>
+
+<body>
+
+    <!-- 背景泡泡装饰 -->
+    <div class="bg-bubble"></div>
+    <div class="bg-bubble"></div>
+    <div class="bg-bubble"></div>
+    <div class="bg-bubble"></div>
+    <div class="bg-bubble"></div>
+    <div class="bg-bubble"></div>
+    <div class="bg-bubble"></div>
+    <div class="bg-bubble"></div>
+    <div class="bg-bubble"></div>
+    <div class="bg-bubble"></div>
+
+    <!-- ===== 第一层：顶部导航 ===== -->
+    <div class="nav-header">
+        <a href="index.html" class="nav-back">&larr; Title</a>
+        <span class="nav-title">Activity Overview</span>
+        <span class="nav-spacer"></span>
+    </div>
+
+    <!-- ===== Help 按钮 + 弹窗 ===== -->
+    <button class="help-fab" id="helpBtn" title="Help">? Help</button>
+    <div class="help-panel" id="helpPanel">
+        <h3>How to use</h3>
+        <p>This page shows your daily activity as a sequence of shapes, distributed across time.</p>
+        <ul>
+            <li>Switch days using the <b>DAY 1–5</b> tabs.</li>
+            <li>Drag the dot on the gradient bar to scrub through time.</li>
+            <li>Each shape &amp; color represents an activity type.</li>
+        </ul>
+        <p style="color:#aaa; font-size:11px; margin-bottom:0;">Click anywhere to close.</p>
+    </div>
+
+    <div class="page-card">
+
+        <!-- Day 导航 -->
+        <div class="day-nav-wrap">
+            <div class="day-nav">
+                <a href="day.html?day=1" class="day-pill"><span class="icon">&#9731;</span> DAY 1</a>
+                <a href="day.html?day=2" class="day-pill"><span class="icon">&#9826;</span> DAY 2</a>
+                <a href="day.html?day=3" class="day-pill"><span class="icon">&#9651;</span> DAY 3</a>
+                <a href="day.html?day=4" class="day-pill"><span class="icon">&#9731;</span> DAY 4</a>
+                <a href="day.html?day=5" class="day-pill"><span class="icon">&#9651;</span> DAY 5</a>
+            </div>
+            <button class="legend-btn" id="legendBtn" title="Legend">i</button>
+        </div>
+
+        <!-- Legend 弹窗 -->
+        <div class="legend-panel" id="legendPanel">
+            <h3>Legend</h3>
+
+            <div class="legend-section-title">Shapes &mdash; Place</div>
+            <div class="legend-grid">
+                <div class="legend-item"><span class="legend-shape">▭</span> Bed</div>
+                <div class="legend-item"><span class="legend-shape">◻</span> Desk / Table</div>
+                <div class="legend-item"><span class="legend-shape">◯</span> School</div>
+                <div class="legend-item"><span class="legend-shape">△</span> Moving</div>
+                <div class="legend-item"><span class="legend-shape">▽</span> Shared Space</div>
+            </div>
+
+            <div class="legend-section-title">Colors &mdash; Activity</div>
+            <div class="legend-grid">
+                <div class="legend-item"><span class="legend-color-dot" style="background:#5C4033"></span> Sleep / Nap</div>
+                <div class="legend-item"><span class="legend-color-dot" style="background:#3B82F6"></span> Study</div>
+                <div class="legend-item"><span class="legend-color-dot" style="background:#8B5CF6"></span> Entertainment</div>
+                <div class="legend-item"><span class="legend-color-dot" style="background:#EF4444"></span> Vehicle</div>
+                <div class="legend-item"><span class="legend-color-dot" style="background:#EC4899"></span> Walk</div>
+                <div class="legend-item"><span class="legend-color-dot" style="background:#EAB308"></span> Bathroom</div>
+                <div class="legend-item"><span class="legend-color-dot" style="background:#F97316"></span> Meal</div>
+                <div class="legend-item"><span class="legend-color-dot" style="background:#22C55E"></span> Class</div>
+                <div class="legend-item"><span class="legend-color-dot" style="background:#9CA3AF"></span> Laundry</div>
+            </div>
+
+            <div class="legend-note">
+                &#9679; 1 shape = 30 min &nbsp;&nbsp; &#9679; &frac12; shape = 15–20 min
+            </div>
+        </div>
+
+        <!-- 主区域 -->
+        <div class="main-content">
+
+            <!-- 左侧时间轴 -->
+            <div class="timeline">
+                <div class="time-labels">
+                    <span class="time-label">0:00</span>
+                    <span class="time-label">6:00</span>
+                    <span class="time-label">12:00</span>
+                    <span class="time-label">18:00</span>
+                    <span class="time-label">24:00</span>
+                </div>
+                <div class="gradient-bar">
+                    <div class="time-dot"></div>
+                </div>
+            </div>
+
+            <!-- 右侧内容区域（后续加功能） -->
+            <div class="content-area">
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const day = parseInt(params.get("day")) || 1;
+
+    // 高亮当前 day pill
+    const pills = document.querySelectorAll('.day-pill');
+    pills.forEach((pill, i) => {
+        if (i + 1 === day) pill.classList.add('active');
+    });
+
+    // 背景泡泡颜色
+    const dayColors = {
+        1: { main: '120,200,255', deep: '80,160,255',  shadow: '0,100,200' },
+        2: { main: '180,140,255', deep: '140,100,220', shadow: '100,60,180' },
+        3: { main: '120,230,200', deep: '60,200,170',  shadow: '30,140,120' },
+        4: { main: '255,180,120', deep: '240,140,80',  shadow: '190,100,30' },
+        5: { main: '255,140,180', deep: '240,100,150', shadow: '190,50,100' },
+    };
+    const c = dayColors[day] || dayColors[1];
+    document.querySelectorAll('.bg-bubble').forEach(b => {
+        b.style.background = `radial-gradient(circle at 35% 30%, rgba(255,255,255,0.55), rgba(255,255,255,0.15) 40%, rgba(${c.main},0.5) 60%, rgba(${c.deep},0.7))`;
+        b.style.boxShadow = `inset 0 -8px 18px rgba(${c.shadow},0.15), inset 0 8px 18px rgba(255,255,255,0.3), 0 4px 16px rgba(${c.shadow},0.15)`;
+    });
+
+    // ========== 形状数据（对应截图 Day 1 ~ Day 5） ==========
+    const colorMap = {
+        p: '#8B5CF6', b: '#D97706', t: '#14B8A6', y: '#EAB308',
+        r: '#EF4444', k: '#EC4899', o: '#F97316', l: '#3B82F6', g: '#9CA3AF'
+    };
+
+    function parseShapes(str) {
+        return str.trim().split(/\s+/).map(code => ({
+            s: code.slice(0, -1),
+            c: colorMap[code.slice(-1)]
+        }));
+    }
+
+    const shapeData = {
+        // Day 1: ▭紫2 → ▭橙5+5+4 → △黄 ▽黄 → △红 → ○绿2 → ◿粉 → ○橙2 → □绿5+2 → ▭橙4 → □蓝2 → □紫5
+        1: parseShapes(`
+            ▭p ▭p ▭b ▭b ▭b
+            ▭b ▭b ▭b ▭b ▭b
+            ▭b ▭b ▭b ▭b ▭b
+            ▭b ▽y ◹y ◿r ◯t
+            ◯t ◿k ◯o ◯o ◿k 
+            ◻t ◻t ◻t ◻t ◻t 
+            ◻t ◻t ◻t ▭b ▭b 
+            ▭b ▭b ◻l ◻l ◻o
+            ▽y ◻p ◻p ◻p ◻p 
+            ◻p
+        `),
+        // Day 2: ▭紫4 → ▭橙5+5+5 → △黄 → □橙2 → ▭橙4 → □紫5 → ○橙 → □绿2 → △黄 → ▭紫2 → □紫4
+        2: parseShapes(`
+            ▭p ▭p ▭p ▭p ▭b
+            ▭b ▭b ▭b ▭b ▭b
+            ▭b ▭b ▭b ▭b ▭b
+            ▭b ▭b ▭b ▭b ▽y
+            ◻o ◻o ▭b ▭b ▭b
+            ▭b ◻p ◻p ◻p ◻p
+            ◻p ◯o ◻t ◻t ▽y
+            ▭p ▭p ◻p ◻p ◻p
+            ◻p
+        `),
+        // Day 3: □紫5 → ▭橙5+5+5 → □蓝4 → □橙 → □紫2 → ▭橙5 → □蓝2 → ▽灰2 → □紫4
+        3: parseShapes(`
+            ◻p ◻p ◻p ◻p ◻p
+            ▭b ▭b ▭b ▭b ▭b
+            ▭b ▭b ▭b ▭b ▭b
+            ▭b ▭b ▭b ▭b ▭b
+            ◻l ◻l ◻l ◻l ◻o
+            ◻p ◻p ▭b ▭b ▭b
+            ▭b ▭b ◻l ◻l ▽g
+            ▽g ◻p ◻p ◻p ◻p
+        `),
+        // Day 4: ▽灰 → □橙 → □蓝2 → □紫4 → ▭橙5+4 → ▭紫2 → ▽黄 → ○绿2 → □蓝2 → △红 → ○橙2 → △红 → □蓝2 → □紫4
+        4: parseShapes(`
+            ▽g ◻o ◻l ◻l ◻p
+            ◻p ◻p ◻p ▭b ▭b
+            ▭b ▭b ▭b ▭b ▭b
+            ▭b ▭b ▭p ▭p ◹y
+            ▯l ◿k ◯t ◯t ◿k 
+            ◻l ◻l ◿r ◯g ◯g
+            △r ◯o ◯o △r ◻l 
+            ◻l ◻p ◻p ◻p ◻p
+        `),
+        // Day 5: ▭橙5+5+5 → □蓝4 → △黄 → ▽粉 → ○绿2 → ○橙3 → □紫5+5 → □橙 → □蓝 → ▭橙5
+        5: parseShapes(`
+            ▭b ▭b ▭b ▭b ▭b
+            ▭b ▭b ▭b ▭b ▭b
+            ▭b ▭b ▭b ▭b ▭b
+            ◻l ◻l ◻l ◻l ▽y
+            ◿k ◯t ◯t ◿k ◯o 
+            ◯o ◯o ◿k ◻p ◻p 
+            ◻p ◻p ◻p ◻p ◻p 
+            ◻p ◻p ◻p ◻o ◻l 
+            ▭b ▭b ▭b ▭b ▭b
+        `),
+    };
+
+    // ========== 渲染形状网格 ==========
+    const contentArea = document.querySelector('.content-area');
+    const shapes = shapeData[day] || shapeData[1];
+
+    const grid = document.createElement('div');
+    grid.className = 'shape-grid';
+
+    shapes.forEach((item) => {
+        const cell = document.createElement('div');
+        cell.className = 'shape-cell';
+        cell.textContent = item.s;
+        cell.style.color = item.c;
+        grid.appendChild(cell);
+    });
+
+    contentArea.appendChild(grid);
+
+    // ========== 滑块吸附（5 个位置）& 滚动同步 ==========
+    const gradientBar = document.querySelector('.gradient-bar');
+    const dot = document.querySelector('.time-dot');
+    const snapPercents = [0, 0.25, 0.5, 0.75, 1]; // 00, 06, 12, 18, 24
+    let isDragging = false;
+    let isSyncing = false;
+    let dragStartY, dragStartTop;
+    let currentSnap = 0;
+
+    function getMaxTop() {
+        return gradientBar.offsetHeight - dot.offsetHeight;
+    }
+
+    function findNearestSnap(percent) {
+        let closest = 0;
+        let minDist = Infinity;
+        snapPercents.forEach((sp, i) => {
+            const d = Math.abs(percent - sp);
+            if (d < minDist) { minDist = d; closest = i; }
+        });
+        return closest;
+    }
+
+    function goToSnap(index, smooth) {
+        currentSnap = Math.max(0, Math.min(index, snapPercents.length - 1));
+        const percent = snapPercents[currentSnap];
+        dot.style.transition = smooth ? 'top 0.3s ease' : 'none';
+        dot.style.top = (percent * getMaxTop()) + 'px';
+        if (smooth) setTimeout(() => { dot.style.transition = 'none'; }, 320);
+
+        const scrollMax = contentArea.scrollHeight - contentArea.clientHeight;
+        if (scrollMax > 0) {
+            isSyncing = true;
+            if (smooth) {
+                contentArea.scrollTo({ top: percent * scrollMax, behavior: 'smooth' });
+                setTimeout(() => { isSyncing = false; }, 500);
+            } else {
+                contentArea.scrollTop = percent * scrollMax;
+                requestAnimationFrame(() => { isSyncing = false; });
+            }
+        }
+    }
+
+    // --- Mouse 拖拽 ---
+    dot.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        isDragging = true;
+        dragStartY = e.clientY;
+        dragStartTop = parseFloat(dot.style.top) || 0;
+        dot.style.cursor = 'grabbing';
+        dot.style.transition = 'none';
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        const maxTop = getMaxTop();
+        let newTop = dragStartTop + (e.clientY - dragStartY);
+        newTop = Math.max(0, Math.min(newTop, maxTop));
+        dot.style.top = newTop + 'px';
+
+        const percent = newTop / maxTop;
+        isSyncing = true;
+        contentArea.scrollTop = percent * (contentArea.scrollHeight - contentArea.clientHeight);
+        requestAnimationFrame(() => { isSyncing = false; });
+    });
+
+    document.addEventListener('mouseup', () => {
+        if (isDragging) {
+            isDragging = false;
+            dot.style.cursor = 'grab';
+            const maxTop = getMaxTop();
+            const percent = (parseFloat(dot.style.top) || 0) / maxTop;
+            goToSnap(findNearestSnap(percent), true);
+        }
+    });
+
+    // --- Touch 拖拽 ---
+    dot.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        isDragging = true;
+        dragStartY = e.touches[0].clientY;
+        dragStartTop = parseFloat(dot.style.top) || 0;
+        dot.style.transition = 'none';
+    }, { passive: false });
+
+    document.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        const maxTop = getMaxTop();
+        let newTop = dragStartTop + (e.touches[0].clientY - dragStartY);
+        newTop = Math.max(0, Math.min(newTop, maxTop));
+        dot.style.top = newTop + 'px';
+
+        const percent = newTop / maxTop;
+        isSyncing = true;
+        contentArea.scrollTop = percent * (contentArea.scrollHeight - contentArea.clientHeight);
+        requestAnimationFrame(() => { isSyncing = false; });
+    }, { passive: false });
+
+    document.addEventListener('touchend', () => {
+        if (isDragging) {
+            isDragging = false;
+            const maxTop = getMaxTop();
+            const percent = (parseFloat(dot.style.top) || 0) / maxTop;
+            goToSnap(findNearestSnap(percent), true);
+        }
+    });
+
+    // --- 点击渐变条 → 吸附到最近位置 ---
+    gradientBar.addEventListener('click', (e) => {
+        if (isDragging) return;
+        const barRect = gradientBar.getBoundingClientRect();
+        const clickPercent = (e.clientY - barRect.top) / barRect.height;
+        goToSnap(findNearestSnap(clickPercent), true);
+    });
+
+    // --- 滚动内容 → 同步滑块到最近吸附点 ---
+    contentArea.addEventListener('scroll', () => {
+        if (isSyncing) return;
+        const scrollMax = contentArea.scrollHeight - contentArea.clientHeight;
+        if (scrollMax <= 0) return;
+        const percent = contentArea.scrollTop / scrollMax;
+        const snapIndex = findNearestSnap(percent);
+        if (snapIndex !== currentSnap) {
+            currentSnap = snapIndex;
+            dot.style.transition = 'top 0.3s ease';
+            dot.style.top = (snapPercents[currentSnap] * getMaxTop()) + 'px';
+            setTimeout(() => { dot.style.transition = 'none'; }, 320);
+        }
+    });
+
+    // 初始化
+    goToSnap(0, false);
+
+    // ========== Legend 弹窗（非阻塞） ==========
+    const legendBtn = document.getElementById('legendBtn');
+    const legendPanel = document.getElementById('legendPanel');
+
+    // ========== Help 弹窗（非阻塞） ==========
+    const helpBtn = document.getElementById('helpBtn');
+    const helpPanel = document.getElementById('helpPanel');
+
+    helpBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        legendPanel.classList.remove('active');
+        helpPanel.classList.toggle('active');
+    });
+
+    legendBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        helpPanel.classList.remove('active');
+        // 定位面板到按钮下方偏左
+        const rect = legendBtn.getBoundingClientRect();
+        legendPanel.style.top = (rect.bottom + 8) + 'px';
+        legendPanel.style.left = rect.left + 'px';
+        legendPanel.classList.toggle('active');
+    });
+
+    // 点击外部关闭
+    document.addEventListener('click', (e) => {
+        if (!legendPanel.contains(e.target) && e.target !== legendBtn) {
+            legendPanel.classList.remove('active');
+        }
+        if (!helpPanel.contains(e.target) && e.target !== helpBtn) {
+            helpPanel.classList.remove('active');
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            helpPanel.classList.remove('active');
+            legendPanel.classList.remove('active');
+        }
+    });
+</script>
+
+</html>

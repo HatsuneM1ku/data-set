@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>My Daily Dataset</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            text-align: center;
+            background: #f4f4f4;
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .bubble-container {
+            position: relative;
+            height: calc(100vh - 120px);
+        }
+
+        /* ===== Bottom Legend ===== */
+        .bottom-legend {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 100px;
+            padding: 16px 40px;
+            background: rgba(200, 180, 168, 0.55);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 50;
+        }
+
+        .legend-entry {
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+            gap: 6px;
+            font-size: 22px;
+            font-weight: 700;
+            color: #333;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .legend-entry .shape {
+            font-size: 20px;
+            color: #555;
+        }
+
+        .bubble {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.1) 40%, rgba(120, 200, 255, 0.4) 60%, rgba(80, 160, 255, 0.6));
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow:
+                inset 0 -10px 20px rgba(0, 100, 200, 0.15),
+                inset 0 10px 20px rgba(255, 255, 255, 0.3),
+                0 4px 15px rgba(0, 100, 200, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 15px;
+            text-decoration: none;
+            transition: 0.2s;
+            position: absolute;
+            cursor: grab;
+        }
+
+        .bubble:nth-child(1) {
+            background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.1) 40%, rgba(120, 200, 255, 0.4) 60%, rgba(80, 160, 255, 0.6));
+            text-shadow: 0 0 6px rgba(40,100,200,0.8), 0 1px 8px rgba(40,100,200,0.6), 0 0 16px rgba(40,100,200,0.4);
+        }
+
+        .bubble:nth-child(2) {
+            background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.1) 40%, rgba(180, 140, 255, 0.4) 60%, rgba(140, 100, 220, 0.6));
+            text-shadow: 0 0 6px rgba(100,60,180,0.8), 0 1px 8px rgba(100,60,180,0.6), 0 0 16px rgba(100,60,180,0.4);
+        }
+
+        .bubble:nth-child(3) {
+            background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.1) 40%, rgba(120, 230, 200, 0.4) 60%, rgba(60, 200, 170, 0.6));
+            text-shadow: 0 0 6px rgba(30,140,120,0.8), 0 1px 8px rgba(30,140,120,0.6), 0 0 16px rgba(30,140,120,0.4);
+        }
+
+        .bubble:nth-child(4) {
+            background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.1) 40%, rgba(255, 180, 120, 0.4) 60%, rgba(240, 140, 80, 0.6));
+            text-shadow: 0 0 6px rgba(190,100,30,0.8), 0 1px 8px rgba(190,100,30,0.6), 0 0 16px rgba(190,100,30,0.4);
+        }
+
+        .bubble:nth-child(5) {
+            background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.1) 40%, rgba(255, 140, 180, 0.4) 60%, rgba(240, 100, 150, 0.6));
+            text-shadow: 0 0 6px rgba(190,50,100,0.8), 0 1px 8px rgba(190,50,100,0.6), 0 0 16px rgba(190,50,100,0.4);
+        }
+
+        .bubble:hover {
+            transform: scale(1.15);
+            box-shadow:
+                inset 0 -10px 20px rgba(0, 100, 200, 0.15),
+                inset 0 10px 20px rgba(255, 255, 255, 0.3),
+                0 8px 30px rgba(0, 100, 200, 0.3);
+        }
+
+        .bubble:active {
+            transform: scale(1.1);
+        }
+
+        /* ===== Tooltip ===== */
+        .bubble-tooltip {
+            display: none;
+            position: absolute;
+            top: 210px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+            border-radius: 18px;
+            padding: 16px 18px 14px;
+            min-width: 190px;
+            z-index: 100;
+            pointer-events: none;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+            white-space: nowrap;
+        }
+
+        .bubble.show-tooltip .bubble-tooltip {
+            display: block;
+        }
+
+        .tooltip-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #444;
+            margin-bottom: 4px;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .tooltip-shape {
+            width: 18px;
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .tooltip-dash {
+            flex: 1;
+            border-bottom: 1.5px dashed #bbb;
+            height: 0;
+            margin: 0 4px;
+        }
+
+        .tooltip-time {
+            font-weight: 700;
+            font-size: 13px;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1 style="padding: 24px; margin: 0;">My Daily Data</h1>
+
+    <div class="bubble-container">
+
+        <a href="day.html?day=1" class="bubble">DAY 1</a>
+        <a href="day.html?day=2" class="bubble">DAY 2</a>
+        <a href="day.html?day=3" class="bubble">DAY 3</a>
+        <a href="day.html?day=4" class="bubble">DAY 4</a>
+        <a href="day.html?day=5" class="bubble">DAY 5</a>
+
+    </div>
+
+    <div class="bottom-legend">
+        <div class="legend-entry"><span class="shape">▭</span> Bed</div>
+        <div class="legend-entry"><span class="shape">◻</span> Desk</div>
+        <div class="legend-entry"><span class="shape">◯</span> School</div>
+        <div class="legend-entry"><span class="shape">△</span> Moving</div>
+        <div class="legend-entry"><span class="shape">▽</span> Shared Space</div>
+    </div>
+
+</body>
+
+<script>
+    const bubbles = document.querySelectorAll('.bubble');
+    const container = document.querySelector('.bubble-container');
+    const BUBBLE_SIZE = 200;
+
+    // ========== Shape data (same as day.html) ==========
+    function parseShapes(str) {
+        return str.trim().split(/\s+/).map(code => code.slice(0, -1));
+    }
+
+    const shapeData = {
+        1: parseShapes(`
+            ▭p ▭p ▭b ▭b ▭b
+            ▭b ▭b ▭b ▭b ▭b
+            ▭b ▭b ▭b ▭b ▭b
+            ▭b ▽y ◹y ◿r ◯t
+            ◯t ◿k ◯o ◯o ◿k
+            ◻t ◻t ◻t ◻t ◻t
+            ◻t ◻t ◻t ▭b ▭b
+            ▭b ▭b ◻l ◻l ◻o
+            ▽y ◻p ◻p ◻p ◻p
+            ◻p
+        `),
+        2: parseShapes(`
+            ▭p ▭p ▭p ▭p ▭b
+            ▭b ▭b ▭b ▭b ▭b
+            ▭b ▭b ▭b ▭b ▭b
+            ▭b ▭b ▭b ▭b ▽y
+            ◻o ◻o ▭b ▭b ▭b
+            ▭b ◻p ◻p ◻p ◻p
+            ◻p ◯o ◻t ◻t ▽y
+            ▭p ▭p ◻p ◻p ◻p
+            ◻p
+        `),
+        3: parseShapes(`
+            ◻p ◻p ◻p ◻p ◻p
+            ▭b ▭b ▭b ▭b ▭b
+            ▭b ▭b ▭b ▭b ▭b
+            ▭b ▭b ▭b ▭b ▭b
+            ◻l ◻l ◻l ◻l ◻o
+            ◻p ◻p ▭b ▭b ▭b
+            ▭b ▭b ◻l ◻l ▽g
+            ▽g ◻p ◻p ◻p ◻p
+        `),
+        4: parseShapes(`
+            ▽g ◻o ◻l ◻l ◻p
+            ◻p ◻p ◻p ▭b ▭b
+            ▭b ▭b ▭b ▭b ▭b
+            ▭b ▭b ▭p ▭p ◹y
+            ▯l ◿k ◯t ◯t ◿k
+            ◻l ◻l ◿r ◯g ◯g
+            △r ◯o ◯o △r ◻l
+            ◻l ◻p ◻p ◻p ◻p
+        `),
+        5: parseShapes(`
+            ▭b ▭b ▭b ▭b ▭b
+            ▭b ▭b ▭b ▭b ▭b
+            ▭b ▭b ▭b ▭b ▭b
+            ◻l ◻l ◻l ◻l ▽y
+            ◿k ◯t ◯t ◿k ◯o
+            ◯o ◯o ◿k ◻p ◻p
+            ◻p ◻p ◻p ◻p ◻p
+            ◻p ◻p ◻p ◻o ◻l
+            ▭b ▭b ▭b ▭b ▭b
+        `),
+    };
+
+    // Map shapes to place categories; half shapes = 15 min, full = 30 min
+    const halfShapes = new Set(['◹', '◿']);
+    const shapeToPlace = { '▭': '▭', '▯': '▭', '◻': '◻', '◯': '◯', '△': '△', '▽': '▽', '◹': '△', '◿': '△' };
+    const placeOrder = ['▭', '◻', '◯', '△', '▽'];
+
+    function computeSummary(dayShapes) {
+        const mins = { '▭': 0, '◻': 0, '◯': 0, '△': 0, '▽': 0 };
+        dayShapes.forEach(s => {
+            const place = shapeToPlace[s] || s;
+            const dur = halfShapes.has(s) ? 15 : 30;
+            if (mins[place] !== undefined) mins[place] += dur;
+        });
+        return mins;
+    }
+
+    function formatTime(mins) {
+        const h = Math.floor(mins / 60);
+        const m = mins % 60;
+        if (h === 0) return m + 'min';
+        if (m === 0) return h + 'h';
+        return h + 'h' + m + 'min';
+    }
+
+    // Build tooltips
+    bubbles.forEach((bubble, i) => {
+        const day = i + 1;
+        const summary = computeSummary(shapeData[day]);
+        const tooltip = document.createElement('div');
+        tooltip.className = 'bubble-tooltip';
+
+        let html = '';
+        placeOrder.forEach(shape => {
+            html += `<div class="tooltip-row">`;
+            html += `<span class="tooltip-shape">${shape}</span>`;
+            html += `<span class="tooltip-dash"></span>`;
+            html += `<span class="tooltip-time">${formatTime(summary[shape])}</span>`;
+            html += `</div>`;
+        });
+        tooltip.innerHTML = html;
+        bubble.appendChild(tooltip);
+
+        // Show on hover (only when not dragging)
+        bubble.addEventListener('mouseenter', () => {
+            if (!bubble.dataset.dragging) bubble.classList.add('show-tooltip');
+        });
+        bubble.addEventListener('mouseleave', () => {
+            bubble.classList.remove('show-tooltip');
+        });
+    });
+
+    // 给每个泡泡设置随机初始位置（不重叠）
+    function initPositions() {
+        const positions = [];
+        bubbles.forEach(bubble => {
+            let x, y, overlap;
+            let tries = 0;
+            do {
+                overlap = false;
+                x = Math.random() * (container.offsetWidth - BUBBLE_SIZE);
+                y = Math.random() * (container.offsetHeight - BUBBLE_SIZE);
+                for (const p of positions) {
+                    const dx = x - p.x;
+                    const dy = y - p.y;
+                    if (Math.sqrt(dx * dx + dy * dy) < BUBBLE_SIZE + 10) {
+                        overlap = true;
+                        break;
+                    }
+                }
+                tries++;
+            } while (overlap && tries < 100);
+            positions.push({ x, y });
+            bubble.style.left = x + 'px';
+            bubble.style.top = y + 'px';
+        });
+    }
+    initPositions();
+
+    // 碰撞检测 & 弹开
+    function pushApart(draggedBubble) {
+        const r = BUBBLE_SIZE; // 碰撞距离
+        bubbles.forEach(other => {
+            if (other === draggedBubble) return;
+
+            const x1 = parseFloat(draggedBubble.style.left) + r / 2;
+            const y1 = parseFloat(draggedBubble.style.top) + r / 2;
+            const x2 = parseFloat(other.style.left) + r / 2;
+            const y2 = parseFloat(other.style.top) + r / 2;
+
+            const dx = x2 - x1;
+            const dy = y2 - y1;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist < r && dist > 0) {
+                // 弹开方向
+                const pushX = (dx / dist) * (r - dist) * 0.6;
+                const pushY = (dy / dist) * (r - dist) * 0.6;
+
+                const containerRect = container.getBoundingClientRect();
+                let newX = parseFloat(other.style.left) + pushX;
+                let newY = parseFloat(other.style.top) + pushY;
+
+                // 限制范围
+                newX = Math.max(0, Math.min(newX, containerRect.width - BUBBLE_SIZE));
+                newY = Math.max(0, Math.min(newY, containerRect.height - BUBBLE_SIZE));
+
+                other.style.left = newX + 'px';
+                other.style.top = newY + 'px';
+            }
+        });
+    }
+
+    // 拖拽 —— 跟 journal.html 一样的模式
+    bubbles.forEach(bubble => {
+        let isDragging = false;
+        let hasMoved = false;
+        let offsetX, offsetY;
+        let startX, startY;
+
+        bubble.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            hasMoved = false;
+            bubble.dataset.dragging = 'true';
+            bubble.classList.remove('show-tooltip');
+            startX = e.clientX;
+            startY = e.clientY;
+
+            const rect = bubble.getBoundingClientRect();
+            offsetX = e.clientX - rect.left;
+            offsetY = e.clientY - rect.top;
+
+            bubble.style.transition = 'none';
+            bubble.style.transform = 'scale(1.05)';
+            bubble.style.cursor = 'grabbing';
+            bubble.style.zIndex = '10';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+
+            if (Math.abs(e.clientX - startX) > 5 || Math.abs(e.clientY - startY) > 5) {
+                hasMoved = true;
+            }
+
+            const containerRect = container.getBoundingClientRect();
+
+            let newX = e.clientX - containerRect.left - offsetX;
+            let newY = e.clientY - containerRect.top - offsetY;
+
+            // 限制在容器范围内
+            newX = Math.max(0, Math.min(newX, containerRect.width - BUBBLE_SIZE));
+            newY = Math.max(0, Math.min(newY, containerRect.height - BUBBLE_SIZE));
+
+            bubble.style.left = newX + 'px';
+            bubble.style.top = newY + 'px';
+
+            // 碰撞弹开
+            pushApart(bubble);
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (isDragging) {
+                isDragging = false;
+                delete bubble.dataset.dragging;
+                bubble.style.transition = 'transform 0.2s';
+                bubble.style.transform = '';
+                bubble.style.cursor = 'grab';
+                bubble.style.zIndex = '';
+            }
+        });
+
+        // 只有没拖动时才跳转
+        bubble.addEventListener('click', (e) => {
+            if (hasMoved) {
+                e.preventDefault();
+            }
+        });
+
+        bubble.ondragstart = () => false;
+    });
+</script>
+
+
+</html>

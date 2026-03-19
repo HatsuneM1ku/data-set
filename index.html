@@ -185,7 +185,7 @@
 
     <div class="bottom-legend">
         <div class="legend-entry"><span class="shape">▭</span> Bed</div>
-        <div class="legend-entry"><span class="shape">◻</span> Desk</div>
+        <div class="legend-entry"><span class="shape">◇</span> Desk</div>
         <div class="legend-entry"><span class="shape">◯</span> School</div>
         <div class="legend-entry"><span class="shape">△</span> Moving</div>
         <div class="legend-entry"><span class="shape">▽</span> Shared Space</div>
@@ -210,63 +210,63 @@
             ▭b ▭b ▭b ▭b ▭b
             ▭b ▽y ◹y ◿r ◯t
             ◯t ◿k ◯o ◯o ◿k
-            ◻t ◻t ◻t ◻t ◻t
-            ◻t ◻t ◻t ▭b ▭b
-            ▭b ▭b ◻l ◻l ◻o
-            ▽y ◻p ◻p ◻p ◻p
-            ◻p
+            ◇t ◇t ◇t ◇t ◇t
+            ◇t ◇t ◇t ▭b ▭b
+            ▭b ▭b ◇l ◇l ◇o
+            ▽y ◇p ◇p ◇p ◇p
+            ◇p
         `),
         2: parseShapes(`
             ▭p ▭p ▭p ▭p ▭b
             ▭b ▭b ▭b ▭b ▭b
             ▭b ▭b ▭b ▭b ▭b
             ▭b ▭b ▭b ▭b ▽y
-            ◻o ◻o ▭b ▭b ▭b
-            ▭b ◻p ◻p ◻p ◻p
-            ◻p ◯o ◻t ◻t ▽y
-            ▭p ▭p ◻p ◻p ◻p
-            ◻p
+            ◇o ◇o ▭b ▭b ▭b
+            ▭b ◇p ◇p ◇p ◇p
+            ◇p ◯o ◇t ◇t ▽y
+            ▭p ▭p ◇p ◇p ◇p
+            ◇p
         `),
         3: parseShapes(`
-            ◻p ◻p ◻p ◻p ◻p
+            ◇p ◇p ◇p ◇p ◇p
             ▭b ▭b ▭b ▭b ▭b
             ▭b ▭b ▭b ▭b ▭b
             ▭b ▭b ▭b ▭b ▭b
-            ◻l ◻l ◻l ◻l ◻o
-            ◻p ◻p ▭b ▭b ▭b
-            ▭b ▭b ◻l ◻l ▽g
-            ▽g ◻p ◻p ◻p ◻p
+            ◇l ◇l ◇l ◇l ◇o
+            ◇p ◇p ▭b ▭b ▭b
+            ▭b ▭b ◇l ◇l ▽g
+            ▽g ◇p ◇p ◇p ◇p
         `),
         4: parseShapes(`
-            ▽g ◻o ◻l ◻l ◻p
-            ◻p ◻p ◻p ▭b ▭b
+            ▽g ◇o ◇l ◇l ◇p
+            ◇p ◇p ◇p ▭b ▭b
             ▭b ▭b ▭b ▭b ▭b
             ▭b ▭b ▭p ▭p ◹y
             ▯l ◿k ◯t ◯t ◿k
-            ◻l ◻l ◿r ◯g ◯g
-            △r ◯o ◯o △r ◻l
-            ◻l ◻p ◻p ◻p ◻p
+            ◇l ◇l ◿r ◯g ◯g
+            △r ◯o ◯o △r ◇l
+            ◇l ◇p ◇p ◇p ◇p
         `),
         5: parseShapes(`
             ▭b ▭b ▭b ▭b ▭b
             ▭b ▭b ▭b ▭b ▭b
             ▭b ▭b ▭b ▭b ▭b
-            ◻l ◻l ◻l ◻l ▽y
+            ◇l ◇l ◇l ◇l ▽y
             ◿k ◯t ◯t ◿k ◯o
-            ◯o ◯o ◿k ◻p ◻p
-            ◻p ◻p ◻p ◻p ◻p
-            ◻p ◻p ◻p ◻o ◻l
+            ◯o ◯o ◿k ◇p ◇p
+            ◇p ◇p ◇p ◇p ◇p
+            ◇p ◇p ◇p ◇o ◇l
             ▭b ▭b ▭b ▭b ▭b
         `),
     };
 
     // Map shapes to place categories; half shapes = 15 min, full = 30 min
     const halfShapes = new Set(['◹', '◿']);
-    const shapeToPlace = { '▭': '▭', '▯': '▭', '◻': '◻', '◯': '◯', '△': '△', '▽': '▽', '◹': '△', '◿': '△' };
-    const placeOrder = ['▭', '◻', '◯', '△', '▽'];
+    const shapeToPlace = { '▭': '▭', '▯': '▭', '◇': '◇', '◯': '◯', '△': '△', '▽': '▽', '◹': '△', '◿': '△' };
+    const placeOrder = ['▭', '◇', '◯', '△', '▽'];
 
     function computeSummary(dayShapes) {
-        const mins = { '▭': 0, '◻': 0, '◯': 0, '△': 0, '▽': 0 };
+        const mins = { '▭': 0, '◇': 0, '◯': 0, '△': 0, '▽': 0 };
         dayShapes.forEach(s => {
             const place = shapeToPlace[s] || s;
             const dur = halfShapes.has(s) ? 15 : 30;

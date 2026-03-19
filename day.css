@@ -339,9 +339,9 @@ body {
 }
 
 .legend-note {
-    font-size: 11px;
-    color: #aaa;
-    line-height: 1.6;
+    font-size: 13px;
+    color: #555;
+    line-height: 1.8;
     border-top: 1px solid rgba(0,0,0,0.06);
     padding-top: 10px;
     margin-top: 4px;
@@ -521,6 +521,7 @@ body {
     grid-template-columns: repeat(5, 1fr);
     gap: 4px;
     padding: 2px;
+    margin-right: 20px;
 }
 
 .shape-cell {
@@ -538,6 +539,10 @@ body {
 .shape-cell:hover {
     transform: scale(1.08);
     background: rgba(255,255,255,0.15);
+}
+
+.shape-cell.hour-6-end {
+    border-right: 2.5px solid rgba(0,0,0,0.25);
 }
 
 /* 顶部导航栏（day-nav 居中, legend 右侧） */

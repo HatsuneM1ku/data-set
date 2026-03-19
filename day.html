@@ -51,11 +51,11 @@
         <!-- Day 导航 -->
         <div class="day-nav-wrap">
             <div class="day-nav">
-                <a href="day.html?day=1" class="day-pill"><span class="icon">&#9731;</span> DAY 1</a>
-                <a href="day.html?day=2" class="day-pill"><span class="icon">&#9826;</span> DAY 2</a>
-                <a href="day.html?day=3" class="day-pill"><span class="icon">&#9651;</span> DAY 3</a>
-                <a href="day.html?day=4" class="day-pill"><span class="icon">&#9731;</span> DAY 4</a>
-                <a href="day.html?day=5" class="day-pill"><span class="icon">&#9651;</span> DAY 5</a>
+                <a href="day.html?day=1" class="day-pill"><span class="icon">☁︎</span> DAY 1</a>
+                <a href="day.html?day=2" class="day-pill"><span class="icon">❄︎</span> DAY 2</a>
+                <a href="day.html?day=3" class="day-pill"><span class="icon">☴</span> DAY 3</a>
+                <a href="day.html?day=4" class="day-pill"><span class="icon">☀︎</span> DAY 4</a>
+                <a href="day.html?day=5" class="day-pill"><span class="icon">☴</span> DAY 5</a>
             </div>
             <button class="legend-btn" id="legendBtn" title="Legend">i</button>
         </div>
@@ -67,7 +67,7 @@
             <div class="legend-section-title">Shapes &mdash; Place</div>
             <div class="legend-grid">
                 <div class="legend-item"><span class="legend-shape">▭</span> Bed</div>
-                <div class="legend-item"><span class="legend-shape">◻</span> Desk / Table</div>
+                <div class="legend-item"><span class="legend-shape">◇</span> Desk / Table</div>
                 <div class="legend-item"><span class="legend-shape">◯</span> School</div>
                 <div class="legend-item"><span class="legend-shape">△</span> Moving</div>
                 <div class="legend-item"><span class="legend-shape">▽</span> Shared Space</div>
@@ -87,7 +87,8 @@
             </div>
 
             <div class="legend-note">
-                &#9679; 1 shape = 30 min &nbsp;&nbsp; &#9679; &frac12; shape = 15–20 min
+                &#9679; 1 shape = 30 min<br>
+                &#9679; &frac12; shape = 15–20 min
             </div>
         </div>
 
@@ -144,7 +145,7 @@
 
     // ========== 形状数据（对应截图 Day 1 ~ Day 5） ==========
     const colorMap = {
-        p: '#8B5CF6', b: '#D97706', t: '#14B8A6', y: '#EAB308',
+        p: '#8B5CF6', b: '#5C4033', t: '#14B8A6', y: '#EAB308',
         r: '#EF4444', k: '#EC4899', o: '#F97316', l: '#3B82F6', g: '#9CA3AF'
     };
 
@@ -163,11 +164,11 @@
             ▭b ▭b ▭b ▭b ▭b
             ▭b ▽y ◹y ◿r ◯t
             ◯t ◿k ◯o ◯o ◿k 
-            ◻t ◻t ◻t ◻t ◻t 
-            ◻t ◻t ◻t ▭b ▭b 
-            ▭b ▭b ◻l ◻l ◻o
-            ▽y ◻p ◻p ◻p ◻p 
-            ◻p
+            ◇t ◇t ◇t ◇t ◇t 
+            ◇t ◇t ◇t ▭b ▭b 
+            ▭b ▭b ◇l ◇l ◇o
+            ▽y ◇p ◇p ◇p ◇p 
+            ◇p
         `),
         // Day 2: ▭紫4 → ▭橙5+5+5 → △黄 → □橙2 → ▭橙4 → □紫5 → ○橙 → □绿2 → △黄 → ▭紫2 → □紫4
         2: parseShapes(`
@@ -175,44 +176,44 @@
             ▭b ▭b ▭b ▭b ▭b
             ▭b ▭b ▭b ▭b ▭b
             ▭b ▭b ▭b ▭b ▽y
-            ◻o ◻o ▭b ▭b ▭b
-            ▭b ◻p ◻p ◻p ◻p
-            ◻p ◯o ◻t ◻t ▽y
-            ▭p ▭p ◻p ◻p ◻p
-            ◻p
+            ◇o ◇o ▭b ▭b ▭b
+            ▭b ◇p ◇p ◇p ◇p
+            ◇p ◯o ◇t ◇t ▽y
+            ▭p ▭p ◇p ◇p ◇p
+            ◇p
         `),
         // Day 3: □紫5 → ▭橙5+5+5 → □蓝4 → □橙 → □紫2 → ▭橙5 → □蓝2 → ▽灰2 → □紫4
         3: parseShapes(`
-            ◻p ◻p ◻p ◻p ◻p
+            ◇p ◇p ◇p ◇p ◇p
             ▭b ▭b ▭b ▭b ▭b
             ▭b ▭b ▭b ▭b ▭b
             ▭b ▭b ▭b ▭b ▭b
-            ◻l ◻l ◻l ◻l ◻o
-            ◻p ◻p ▭b ▭b ▭b
-            ▭b ▭b ◻l ◻l ▽g
-            ▽g ◻p ◻p ◻p ◻p
+            ◇l ◇l ◇l ◇l ◇o
+            ◇p ◇p ▭b ▭b ▭b
+            ▭b ▭b ◇l ◇l ▽g
+            ▽g ◇p ◇p ◇p ◇p
         `),
         // Day 4: ▽灰 → □橙 → □蓝2 → □紫4 → ▭橙5+4 → ▭紫2 → ▽黄 → ○绿2 → □蓝2 → △红 → ○橙2 → △红 → □蓝2 → □紫4
         4: parseShapes(`
-            ▽g ◻o ◻l ◻l ◻p
-            ◻p ◻p ◻p ▭b ▭b
+            ▽g ◇o ◇l ◇l ◇p
+            ◇p ◇p ◇p ▭b ▭b
             ▭b ▭b ▭b ▭b ▭b
             ▭b ▭b ▭p ▭p ◹y
-            ▯l ◿k ◯t ◯t ◿k 
-            ◻l ◻l ◿r ◯g ◯g
-            △r ◯o ◯o △r ◻l 
-            ◻l ◻p ◻p ◻p ◻p
+            ⦉l ◿k ◯t ◯t ◿k 
+            ◇l ◇l ◿r ◯g ◯g
+            △r ◯o ◯o △r ◇l 
+            ◇l ◇p ◇p ◇p ◇p
         `),
         // Day 5: ▭橙5+5+5 → □蓝4 → △黄 → ▽粉 → ○绿2 → ○橙3 → □紫5+5 → □橙 → □蓝 → ▭橙5
         5: parseShapes(`
             ▭b ▭b ▭b ▭b ▭b
             ▭b ▭b ▭b ▭b ▭b
             ▭b ▭b ▭b ▭b ▭b
-            ◻l ◻l ◻l ◻l ▽y
+            ◇l ◇l ◇l ◇l ▽y
             ◿k ◯t ◯t ◿k ◯o 
-            ◯o ◯o ◿k ◻p ◻p 
-            ◻p ◻p ◻p ◻p ◻p 
-            ◻p ◻p ◻p ◻o ◻l 
+            ◯o ◯o ◿k ◇p ◇p 
+            ◇p ◇p ◇p ◇p ◇p 
+            ◇p ◇p ◇p ◇o ◇l 
             ▭b ▭b ▭b ▭b ▭b
         `),
     };
@@ -224,11 +225,21 @@
     const grid = document.createElement('div');
     grid.className = 'shape-grid';
 
+    const halfShapes = new Set(['◹', '◿']);
+    let cumTime = 0;
+    const BLOCK = 360; // 6 hours in minutes
+
     shapes.forEach((item) => {
+        const dur = halfShapes.has(item.s) ? 15 : 30;
+        const prevBlock = Math.floor(cumTime / BLOCK);
+        cumTime += dur;
+        const newBlock = Math.floor(cumTime / BLOCK);
+
         const cell = document.createElement('div');
         cell.className = 'shape-cell';
         cell.textContent = item.s;
         cell.style.color = item.c;
+        if (newBlock > prevBlock) cell.classList.add('hour-6-end');
         grid.appendChild(cell);
     });
 

@@ -126,11 +126,10 @@
             backdrop-filter: blur(12px);
             border-radius: 18px;
             padding: 16px 18px 14px;
-            min-width: 190px;
+            min-width: 280px;
             z-index: 100;
             pointer-events: none;
             box-shadow: 0 4px 20px rgba(0,0,0,0.12);
-            white-space: nowrap;
         }
 
         .bubble.show-tooltip .bubble-tooltip {
@@ -140,11 +139,15 @@
         .tooltip-row {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             font-size: 13px;
             color: #444;
-            margin-bottom: 4px;
+            margin-bottom: 7px;
             font-family: 'Nunito', sans-serif;
+        }
+
+        .tooltip-row:last-child {
+            margin-bottom: 0;
         }
 
         .tooltip-shape {
@@ -154,17 +157,37 @@
             color: #666;
         }
 
-        .tooltip-dash {
+        .tooltip-label {
+            width: 94px;
+            text-align: left;
+            color: #555;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .tooltip-bar-track {
             flex: 1;
-            border-bottom: 1.5px dashed #bbb;
-            height: 0;
-            margin: 0 4px;
+            height: 8px;
+            border-radius: 999px;
+            background: rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            min-width: 76px;
+        }
+
+        .tooltip-bar-fill {
+            display: block;
+            height: 100%;
+            border-radius: 999px;
+            width: 0;
+            transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
         .tooltip-time {
             font-weight: 700;
             font-size: 13px;
             color: #333;
+            min-width: 54px;
+            text-align: right;
         }
     </style>
 </head>
@@ -264,6 +287,8 @@
     const halfShapes = new Set(['◹', '◿']);
     const shapeToPlace = { '▭': '▭', '▯': '▭', '◇': '◇', '◯': '◯', '△': '△', '▽': '▽', '◹': '△', '◿': '△' };
     const placeOrder = ['▭', '◇', '◯', '△', '▽'];
+    const placeLabel = { '▭': 'Bed', '◇': 'Desk', '◯': 'School', '△': 'Moving', '▽': 'Shared' };
+    const placeColor = { '▭': '#5C85C8', '◇': '#9B6FD4', '◯': '#3BAD92', '△': '#E07B54', '▽': '#D4A244' };
 
     function computeSummary(dayShapes) {
         const mins = { '▭': 0, '◇': 0, '◯': 0, '△': 0, '▽': 0 };
@@ -287,14 +312,18 @@
     bubbles.forEach((bubble, i) => {
         const day = i + 1;
         const summary = computeSummary(shapeData[day]);
+        const maxMins = Math.max(...placeOrder.map(shape => summary[shape]), 1);
         const tooltip = document.createElement('div');
         tooltip.className = 'bubble-tooltip';
 
         let html = '';
-        placeOrder.forEach(shape => {
+        placeOrder.forEach((shape) => {
+            const pct = (summary[shape] / maxMins) * 100;
+            const colr = placeColor[shape];
             html += `<div class="tooltip-row">`;
             html += `<span class="tooltip-shape">${shape}</span>`;
-            html += `<span class="tooltip-dash"></span>`;
+            html += `<span class="tooltip-label">${placeLabel[shape]}</span>`;
+            html += `<span class="tooltip-bar-track"><span class="tooltip-bar-fill" data-pct="${pct.toFixed(1)}" style="background:${colr};"></span></span>`;
             html += `<span class="tooltip-time">${formatTime(summary[shape])}</span>`;
             html += `</div>`;
         });
@@ -303,10 +332,22 @@
 
         // Show on hover (only when not dragging)
         bubble.addEventListener('mouseenter', () => {
-            if (!bubble.dataset.dragging) bubble.classList.add('show-tooltip');
+            if (!bubble.dataset.dragging) {
+                bubble.classList.add('show-tooltip');
+                // Trigger width animation after display:block takes effect
+                const fills = bubble.querySelectorAll('.tooltip-bar-fill');
+                fills.forEach((fill, idx) => {
+                    setTimeout(() => {
+                        fill.style.width = fill.dataset.pct + '%';
+                    }, idx * 60);
+                });
+            }
         });
         bubble.addEventListener('mouseleave', () => {
             bubble.classList.remove('show-tooltip');
+            bubble.querySelectorAll('.tooltip-bar-fill').forEach(fill => {
+                fill.style.width = '0';
+            });
         });
     });
 
